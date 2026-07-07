@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BazeLP — Baze University Learning Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style2.css">
+</head>
+<body>
+
+<!-- ═══ AUTH SCREEN ═══ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+     <img src="baze logo.jpeg" width="34" height="34" alt="Baze University Logo" style="flex-shrink:0;border-radius:6px;"/>
+      <h1>BazeLP</h1>
+      <p>Baze University · Department of Computer Science</p>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+
+    <div id="login-form">
+      <div class="form-group">
+        <label for="login-email">Email Address</label>
+        <input type="email" id="login-email" name="email" placeholder="you@bazeuniversity.edu.ng"/>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label for="login-role">Sign in as</label>
+        <select id="login-role" name="role">
+          <option value="student">Student</option>
+          <option value="lecturer">Lecturer</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign In to BazeLP</button>
+    </div>
+
+    <div id="register-form" class="hidden">
+      <div class="form-group">
+        <label for="reg-name">Full Name</label>
+        <input type="text" id="reg-name" name="full_name" placeholder="e.g. Mustafa Ibrahim"/>
+      </div>
+      <div class="form-group">
+        <label for="reg-email">Email Address</label>
+        <input type="email" id="reg-email" name="email" placeholder="you@bazeuniversity.edu.ng"/>
+      </div>
+      <div class="form-group">
+        <label for="reg-matric">Matric / Staff Number</label>
+        <input type="text" id="reg-matric" name="matric_number" placeholder="e.g. BU/CS/2022/001"/>
+      </div>
+      <div class="form-group">
+        <label for="reg-role">Role</label>
+        <select id="reg-role" name="role">
+          <option value="student">Student</option>
+          <option value="lecturer">Lecturer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" name="password" placeholder="Min. 8 characters"/>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Create Account</button>
+    </div>
+
+  </div><!-- /auth-card -->
+</div><!-- /auth-screen -->
+
+<!-- ═══ TOPBAR ═══ -->
+<div id="topbar" class="hidden">
+  <div class="topbar-logo">
+    <img src="baze logo.jpeg" width="34" height="34" alt="Baze University Logo" style="flex-shrink:0;border-radius:6px;"/>
+    BazeLP
+    <span class="topbar-logo-badge">BAZE UNIVERSITY</span>
+  </div>
+  <div class="topbar-right">
+    <button class="notif-btn" onclick="showPage('notifications')">
+      🔔<span class="notif-dot" id="notif-dot"></span>
+    </button>
+    <span class="role-badge" id="role-badge">STUDENT</span>
+    <div class="avatar" id="user-avatar" onclick="logout()">A</div>
+  </div>
+</div>
+
+<!-- ═══ APP BODY ═══ -->
+<div id="app" class="hidden">
+  <div id="sidebar">
+    <div id="nav-student" class="hidden">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showPage('s-dashboard')"><span class="ni">🏠</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('s-courses')"><span class="ni">📚</span> My Courses</div>
+      <div class="nav-item" onclick="showPage('s-assignments')"><span class="ni">📝</span> Assignments</div>
+      <div class="nav-item" onclick="showPage('s-exams')"><span class="ni">📋</span> Exams</div>
+      <div class="nav-section">Learning</div>
+      <div class="nav-item" onclick="showPage('s-adaptive')"><span class="ni">🤖</span> AI Learning Paths</div>
+      <div class="nav-item" onclick="showPage('s-results')"><span class="ni">📊</span> My Results</div>
+      <div class="nav-section">Connect</div>
+      <div class="nav-item" onclick="showPage('s-booking')"><span class="ni">📅</span> Book Office Hours</div>
+      <div class="nav-item" onclick="showPage('notifications')"><span class="ni">🔔</span> Notifications</div>
+    </div>
+
+    <div id="nav-lecturer" class="hidden">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showPage('l-dashboard')"><span class="ni">🏠</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('l-courses')"><span class="ni">📚</span> My Courses</div>
+      <div class="nav-item" onclick="showPage('l-upload')"><span class="ni">📤</span> Upload Material</div>
+      <div class="nav-item" onclick="showPage('l-assignments')"><span class="ni">📝</span> Assignments</div>
+      <div class="nav-item" onclick="showPage('l-exams')"><span class="ni">📋</span> Manage Exams</div>
+      <div class="nav-section">Analytics</div>
+      <div class="nav-item" onclick="showPage('l-effectiveness')"><span class="ni">📈</span> Teaching Effectiveness</div>
+      <div class="nav-item" onclick="showPage('l-results')"><span class="ni">🎓</span> Publish Results</div>
+      <div class="nav-section">Connect</div>
+      <div class="nav-item" onclick="showPage('l-officehours')"><span class="ni">📅</span> Office Hours</div>
+      <div class="nav-item" onclick="showPage('notifications')"><span class="ni">🔔</span> Notifications</div>
+    </div>
+
+    <div id="nav-admin" class="hidden">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showPage('a-dashboard')"><span class="ni">🏠</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('a-users')"><span class="ni">👥</span> Users</div>
+      <div class="nav-item" onclick="showPage('a-courses')"><span class="ni">📚</span> All Courses</div>
+      <div class="nav-item" onclick="showPage('a-enroll')"><span class="ni">➕</span> Enroll Students</div>
+      <div class="nav-section">System</div>
+      <div class="nav-item" onclick="showPage('a-logs')"><span class="ni">🔍</span> Exam Logs</div>
+      <div class="nav-item" onclick="showPage('a-calendar')"><span class="ni">📆</span> Academic Calendar</div>
+      <div class="nav-item" onclick="showPage('notifications')"><span class="ni">🔔</span> Notifications</div>
+    </div>
+  </div>
+
+  <div id="main">
+
+    <!-- ═══════════ STUDENT PAGES ═══════════ -->
+
+    <!-- S: Dashboard -->
+    <div id="s-dashboard" class="page">
+      <div class="page-header">
+        <h2>Good morning, <span id="student-name-display">Mustafa</span> 👋</h2>
+        <p>Here's your academic overview for today.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:#4b5563"><div class="stat-label">Enrolled Courses</div><div class="stat-val">8</div><div class="stat-sub">3 active this week</div></div>
+        <div class="stat-card" style="--accent:#d97706"><div class="stat-label">Pending Tasks</div><div class="stat-val">3</div><div class="stat-sub">1 due today</div></div>
+        <div class="stat-card" style="--accent:#1d6fa4"><div class="stat-label">Overall CGPA</div><div class="stat-val">4.12</div><div class="stat-sub">↑ from 3.98</div></div>
+        <div class="stat-card" style="--accent:#7c3aed"><div class="stat-label">Study Streak</div><div class="stat-val">7 days</div><div class="stat-sub">Keep it up! 🔥</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="panel">
+          <div class="panel-title">📌 Upcoming Deadlines</div>
+          <table>
+            <tr><td><strong>Data Structures</strong><br><span style="font-size:11px;color:var(--text-3)">Assignment 2</span></td><td style="text-align:right"><span class="badge badge-red">Today</span></td></tr>
+            <tr><td><strong>Web Technologies</strong><br><span style="font-size:11px;color:var(--text-3)">Quiz 3</span></td><td style="text-align:right"><span class="badge badge-amber">Tomorrow</span></td></tr>
+            <tr><td><strong>Database Systems</strong><br><span style="font-size:11px;color:var(--text-3)">Group Project</span></td><td style="text-align:right"><span class="badge badge-gray">5 days</span></td></tr>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-title">🤖 AI Recommendation</div>
+          <div style="background:var(--brand-light);border-radius:var(--radius);padding:14px;border-left:4px solid var(--brand);">
+            <p style="font-size:13px;font-weight:600;color:var(--brand-dark);">Focus: Recursion & Trees</p>
+            <p style="font-size:12px;color:var(--text-2);margin-top:4px;">Based on your last quiz score of 48%, the AI suggests reviewing <strong>tree traversal</strong> algorithms before your next exam.</p>
+            <button class="btn btn-green btn-sm" style="margin-top:10px;" onclick="showPage('s-adaptive')">View Learning Path →</button>
+          </div>
+          <div style="margin-top:14px;">
+            <div style="font-size:12px;color:var(--text-3);margin-bottom:6px;">RECENT ACTIVITY</div>
+            <div style="font-size:13px;color:var(--text-2);">✅ Completed: Algorithm Analysis quiz<br/>📖 Read: Chapter 5 – Sorting Algorithms<br/>🎥 Watched: Linked Lists lecture video</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:20px;">
+        <div class="panel-title">📊 Course Progress</div>
+        <div>
+          <div class="topic-bar-row"><span class="topic-name">Data Structures</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:72%;background:var(--brand);"></div></div><span class="topic-pct" style="color:var(--brand);">72%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Web Technologies</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:58%;background:var(--amber);"></div></div><span class="topic-pct" style="color:var(--amber);">58%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Database Systems</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:85%;background:var(--brand);"></div></div><span class="topic-pct" style="color:var(--brand);">85%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Computer Networks</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:40%;background:var(--red);"></div></div><span class="topic-pct" style="color:var(--red);">40%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Software Engineering</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:66%;background:var(--blue);"></div></div><span class="topic-pct" style="color:var(--blue);">66%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Operating Systems</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:51%;background:var(--amber);"></div></div><span class="topic-pct" style="color:var(--amber);">51%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Theory of Computation</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:34%;background:var(--red);"></div></div><span class="topic-pct" style="color:var(--red);">34%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">Mobile App Development</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:63%;background:var(--blue);"></div></div><span class="topic-pct" style="color:var(--blue);">63%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S: Courses -->
+    <div id="s-courses" class="page hidden">
+      <div class="page-header"><h2>My Courses</h2><p>All enrolled courses for the current semester.</p></div>
+      <div class="courses-grid" id="student-courses-grid"></div>
+    </div>
+
+    <!-- S: Course Detail -->
+    <div id="s-course-detail" class="page hidden">
+      <button class="back-btn" onclick="showPage('s-courses')">← Back to Courses</button>
+      <div id="course-detail-content"></div>
+    </div>
+
+    <!-- S: Assignments -->
+    <div id="s-assignments" class="page hidden">
+      <div class="page-header"><h2>Assignments</h2><p>Submit and track all your assignments.</p></div>
+      <div class="panel">
+        <div class="panel-title">📝 Active Assignments</div>
+        <table>
+          <thead><tr><th>Assignment</th><th>Course</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="student-assignments-table">
+            <tr id="assign-row-binary-tree"><td><strong>Binary Tree Implementation</strong></td><td>Data Structures</td><td>Today, 11:59 PM</td><td class="assign-status"><span class="badge badge-red">Pending</span></td><td class="assign-action"><button class="btn btn-green btn-sm" onclick="showSubmitModal('Binary Tree Implementation','assign-row-binary-tree','Data Structures')">Submit</button></td></tr>
+            <tr id="assign-row-portfolio"><td><strong>Responsive Portfolio</strong></td><td>Web Technologies</td><td>Jun 10, 2026</td><td class="assign-status"><span class="badge badge-amber">In Progress</span></td><td class="assign-action"><button class="btn btn-green btn-sm" onclick="showSubmitModal('Responsive Portfolio','assign-row-portfolio')">Submit</button></td></tr>
+            <tr><td><strong>ER Diagram Design</strong></td><td>Database Systems</td><td>Jun 14, 2026</td><td><span class="badge badge-green">Submitted</span></td><td><span style="font-size:12px;color:var(--text-3)">Awaiting mark</span></td></tr>
+            <tr id="assign-row-osi"><td><strong>OSI Model Analysis</strong></td><td>Computer Networks</td><td>Jun 18, 2026</td><td class="assign-status"><span class="badge badge-gray">Not Started</span></td><td class="assign-action"><button class="btn btn-green btn-sm" onclick="showSubmitModal('OSI Model Analysis','assign-row-osi')">Submit</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">✅ Graded Assignments</div>
+        <table>
+          <thead><tr><th>Assignment</th><th>Course</th><th>Score</th><th>Feedback</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sorting Algorithm Analysis</strong></td><td>Data Structures</td><td><strong style="color:var(--brand)">88/100</strong></td><td>Good work, improve Big-O explanations.</td></tr>
+            <tr><td><strong>HTML/CSS Landing Page</strong></td><td>Web Technologies</td><td><strong style="color:var(--brand)">92/100</strong></td><td>Excellent design and responsiveness.</td></tr>
+            <tr><td><strong>SQL Query Optimization</strong></td><td>Database Systems</td><td><strong style="color:var(--amber)">74/100</strong></td><td>Review JOIN operations.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S: Exams -->
+    <div id="s-exams" class="page hidden">
+      <div class="page-header"><h2>Exams</h2><p>Upcoming and past examinations.</p></div>
+      <div class="alert alert-info">🔒 BazeLP exams use anti-cheating technology: browser lockdown, randomized questions, and activity monitoring are active during all exams.</div>
+      <div class="panel">
+        <div class="panel-title">📋 Upcoming Exams</div>
+        <table>
+          <thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Duration</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="student-upcoming-exams-table">
+            <tr><td><strong>Midterm Exam</strong></td><td>Data Structures</td><td>Jun 12, 2026 — 10:00 AM</td><td>90 mins</td><td><span class="badge badge-amber">Upcoming</span></td><td><button class="btn btn-green btn-sm" onclick="startExam()">Start Exam</button></td></tr>
+            <tr><td><strong>Quiz 3</strong></td><td>Web Technologies</td><td>Jun 15, 2026 — 2:00 PM</td><td>30 mins</td><td><span class="badge badge-gray">Scheduled</span></td><td><span style="font-size:12px;color:var(--text-3)">Not open yet</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">📁 Past Exams</div>
+        <table>
+          <thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Score</th><th>Grade</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Quiz 2</strong></td><td>Data Structures</td><td>May 20, 2026</td><td>48/60</td><td><span class="badge badge-green">B+</span></td></tr>
+            <tr><td><strong>Quiz 1</strong></td><td>Database Systems</td><td>May 5, 2026</td><td>55/60</td><td><span class="badge badge-green">A</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S: EXAM TAKING -->
+    <div id="s-exam-taking" class="page hidden">
+      <div id="exam-flag-banner" class="flag-banner">⚠️ Warning: Tab switching detected! This has been logged and reported to your lecturer.</div>
+      <div class="exam-header">
+        <div>
+          <div style="font-size:12px;opacity:0.8;margin-bottom:2px;">DATA STRUCTURES — MIDTERM EXAM</div>
+          <div style="font-size:16px;font-weight:600;">Question <span id="exam-q-num">1</span> of <span id="exam-q-total">5</span></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;opacity:0.8;margin-bottom:2px;">TIME REMAINING</div>
+          <div class="exam-timer" id="exam-timer">45:00</div>
+        </div>
+      </div>
+      <div class="security-notice">🔒 Security Active: Tab switching, copy-paste disabled. All activity is being logged. Stay focused.</div>
+      <div id="exam-question-container"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button class="btn btn-outline" id="exam-prev-btn" onclick="examNav(-1)">← Previous</button>
+        <div style="display:flex;gap:8px;" id="exam-nav-dots"></div>
+        <button class="btn btn-green" id="exam-next-btn" onclick="examNav(1)">Next →</button>
+      </div>
+    </div>
+
+    <!-- S: AI Adaptive Learning -->
+    <div id="s-adaptive" class="page hidden">
+      <div class="page-header"><h2>🤖 AI Learning Paths</h2><p>Answer the quiz below — your path is generated live from what you actually get right or wrong.</p></div>
+      <div class="alert alert-info">📝 This is a real quiz, not a demo. Your answers below are graded on the spot and the path generates from your actual results.</div>
+
+      <div class="panel">
+        <div class="panel-title">📝 Quick Diagnostic Quiz</div>
+        <div id="adaptive-quiz-list"></div>
+        <button class="btn btn-green" style="margin-top:6px;" onclick="runAdaptiveAnalysis()">Generate My Learning Path</button>
+      </div>
+
+      <div id="adaptive-quiz-result"></div>
+    </div>
+
+    <!-- S: AI Learning Path — Material Detail -->
+    <div id="s-path-detail" class="page hidden">
+      <button class="back-btn" onclick="showPage('s-adaptive')">← Back to Learning Paths</button>
+      <div id="path-detail-content"></div>
+    </div>
+
+    <!-- S: Results -->
+    <div id="s-results" class="page hidden">
+      <div class="page-header"><h2>My Results</h2><p>Academic performance across all courses.</p></div>
+      <div class="stats-grid" id="results-stats-grid">
+        <div class="stat-card" style="--accent:var(--brand)"><div class="stat-label">Semester GPA</div><div class="stat-val">4.12</div><div class="stat-sub">8 courses</div></div>
+        <div class="stat-card" style="--accent:var(--blue)"><div class="stat-label">Highest Score</div><div class="stat-val">94%</div><div class="stat-sub">Database Systems</div></div>
+        <div class="stat-card" style="--accent:var(--amber)"><div class="stat-label">Needs Attention</div><div class="stat-val">40%</div><div class="stat-sub">Computer Networks</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">📊 Semester Results Breakdown</div>
+        <table>
+          <thead><tr><th>Course</th><th>CA Average</th><th>Exam</th><th>Total</th><th>Grade</th></tr></thead>
+          <tbody id="student-results-table">
+            <tr><td><strong>Database Systems</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 95/100, Quizzes 92/100, Exam 94/100</td><td><strong>94%</strong></td><td><span class="badge badge-green">A+</span></td></tr>
+            <tr><td><strong>Web Technologies</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 90/100, Quizzes 85/100, Exam 80/100</td><td><strong>85%</strong></td><td><span class="badge badge-green">A</span></td></tr>
+            <tr><td><strong>Computer Networks</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 55/100, Quizzes 42/100, Exam 38/100</td><td><strong>45%</strong></td><td><span class="badge badge-red">D</span></td></tr>
+            <tr><td><strong>Software Engineering</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 78/100, Quizzes 80/100, Exam 74/100</td><td><strong>77%</strong></td><td><span class="badge badge-blue">B+</span></td></tr>
+            <tr><td><strong>Operating Systems</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 70/100, Quizzes 65/100, Exam 60/100</td><td><strong>65%</strong></td><td><span class="badge badge-blue">B</span></td></tr>
+            <tr><td><strong>Theory of Computation</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 50/100, Quizzes 45/100, Exam 40/100</td><td><strong>45%</strong></td><td><span class="badge badge-red">D</span></td></tr>
+            <tr><td><strong>Mobile App Development</strong></td><td colspan="2" style="color:var(--text-3);">Assignments 82/100, Quizzes 75/100, Exam 70/100</td><td><strong>76%</strong></td><td><span class="badge badge-blue">B+</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S: Office Hours Booking -->
+    <div id="s-booking" class="page hidden">
+      <div class="page-header"><h2>📅 Book Office Hours</h2><p>Schedule a one-on-one session with your lecturers.</p></div>
+      <div class="panel">
+        <div class="panel-title">Select a Lecturer</div>
+        <div id="booking-lecturers-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px;">
+          <p style="color:var(--text-3);">Loading lecturers...</p>
+        </div>
+        <div id="booking-slots-section" class="hidden">
+          <div style="border-top:1px solid var(--border);padding-top:20px;">
+            <div class="panel-title">Available Slots — <span id="booking-lecturer-name"></span></div>
+            <div style="margin-bottom:16px;">
+              <label class="field-label">Select Date</label>
+              <input type="date" class="input-field" style="max-width:220px;" id="booking-date-select"/>
+            </div>
+            <div class="slot-grid" id="booking-slots"></div>
+            <div id="booking-confirm-section" class="hidden" style="margin-top:16px;padding:16px;background:var(--brand-light);border-radius:var(--radius);border-left:4px solid var(--brand);">
+              <p style="font-weight:700;color:var(--brand-dark);font-size:14px;">✅ Booking Confirmed!</p>
+              <p style="font-size:13px;color:var(--text-2);margin-top:4px;" id="booking-confirm-text"></p>
+              <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="resetBookingForm()">Book Another Slot</button>
+            </div>
+            <div style="margin-top:16px;" id="booking-note-section">
+              <label class="field-label">Reason for Visit (optional)</label>
+              <textarea class="textarea-field" id="booking-note" placeholder="e.g. I need help understanding tree traversal..." style="min-height:70px;"></textarea>
+              <button class="btn btn-green" style="margin-top:10px;" onclick="confirmBooking()">Confirm Booking</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">📋 My Upcoming Bookings</div>
+        <table>
+          <thead><tr><th>Lecturer</th><th>Course</th><th>Date & Time</th><th>Location</th><th>Status</th></tr></thead>
+          <tbody id="my-bookings-table">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-3);">Loading your bookings...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ LECTURER PAGES ═══════════ -->
+
+    <!-- L: Dashboard -->
+    <div id="l-dashboard" class="page hidden">
+      <div class="page-header"><h2>Welcome back, Dr. Gilbert 👋</h2><p>Your teaching overview for this semester.</p></div>
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:var(--brand)"><div class="stat-label">Active Courses</div><div class="stat-val">3</div><div class="stat-sub">This semester</div></div>
+        <div class="stat-card" style="--accent:var(--blue)"><div class="stat-label">Total Students</div><div class="stat-val">147</div><div class="stat-sub">Across all courses</div></div>
+        <div class="stat-card" style="--accent:var(--amber)"><div class="stat-label">Pending Grading</div><div class="stat-val">23</div><div class="stat-sub">Submissions awaiting</div></div>
+        <div class="stat-card" style="--accent:var(--red)"><div class="stat-label">At-Risk Students</div><div class="stat-val">8</div><div class="stat-sub">Below 50% average</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="panel">
+          <div class="panel-title">⚠️ At-Risk Students</div>
+          <table>
+            <thead><tr><th>Student</th><th>Course</th><th>Avg</th></tr></thead>
+            <tbody>
+              <tr><td>Chukwuemeka O.</td><td>Data Structures</td><td><span style="color:var(--red);font-weight:700;">34%</span></td></tr>
+              <tr><td>Hauwa M.</td><td>Data Structures</td><td><span style="color:var(--red);font-weight:700;">41%</span></td></tr>
+              <tr><td>Seun A.</td><td>Algorithms</td><td><span style="color:var(--amber);font-weight:700;">48%</span></td></tr>
+              <tr><td>Ibrahim K.</td><td>Data Structures</td><td><span style="color:var(--amber);font-weight:700;">49%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-title">📅 Today's Office Hours Bookings</div>
+          <table>
+            <tbody>
+              <tr><td><strong>Mustafa I.</strong><br><span style="font-size:11px;color:var(--text-3)">Tree Traversal help</span></td><td style="text-align:right"><span class="badge badge-green">10:00 AM</span></td></tr>
+              <tr><td><strong>Yusuf B.</strong><br><span style="font-size:11px;color:var(--text-3)">Assignment clarification</span></td><td style="text-align:right"><span class="badge badge-green">11:00 AM</span></td></tr>
+              <tr><td><strong>Ngozi E.</strong><br><span style="font-size:11px;color:var(--text-3)">Exam preparation</span></td><td style="text-align:right"><span class="badge badge-amber">2:00 PM</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- L: Courses -->
+    <div id="l-courses" class="page hidden">
+      <div class="page-header"><h2>My Courses</h2><p>Manage your active courses and materials.</p></div>
+      <div class="courses-grid" id="lecturer-courses-grid"></div>
+    </div>
+
+    <!-- L: Upload Material -->
+    <div id="l-upload" class="page hidden">
+      <div class="page-header"><h2>📤 Upload Course Material</h2><p>Share lecture notes, slides, and resources with students.</p></div>
+      <div class="panel">
+        <div class="form-row"><div><label class="field-label">Course</label><select class="select-field" id="upload-course-select"><option value="CSC301">Data Structures (CSC301)</option><option value="CSC302">Algorithm Design (CSC302)</option><option value="CSC305">Operating Systems (CSC305)</option><option value="CSC306">Theory of Computation (CSC306)</option></select></div><div><label class="field-label">Material Type</label><select class="select-field" id="upload-type-select" onchange="toggleUploadYoutubeField()"><option value="PDF">Lecture Notes (PDF)</option><option value="PDF">Assignment</option><option value="Video">Tutorial Video (YouTube Link)</option><option value="PDF">Slide Deck</option><option value="PDF">Reference Material</option></select></div></div>
+        <div class="form-row full"><label class="field-label">Title</label><input class="input-field" id="upload-title-input" placeholder="e.g. Week 5 — Binary Trees and Traversal"/></div>
+        <div class="form-row full"><label class="field-label">Description</label><textarea class="textarea-field" id="upload-desc-input" placeholder="Brief description of this material..."></textarea></div>
+        <div class="form-row full hidden" id="upload-youtube-row"><label class="field-label">YouTube Link</label><input class="input-field" id="upload-youtube-input" placeholder="e.g. https://www.youtube.com/watch?v=..."/></div>
+        <div id="upload-file-area">
+          <label class="field-label">File Upload</label>
+          <div class="upload-area" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon">📂</div>
+            <p id="lecturer-upload-text">Click to upload or drag & drop</p>
+            <span>PDF, DOCX, PPTX — Max 10MB</span>
+          </div>
+          <input type="file" id="file-input" style="display:none;" onchange="handleLecturerFile(this)"/>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <button class="btn btn-green" onclick="uploadCourseMaterial()">Upload Material</button>
+          <button class="btn btn-outline" onclick="showToast('Draft saved.')">Save as Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- L: Assignments (Lecturer) -->
+    <div id="l-assignments" class="page hidden">
+      <div class="page-header"><h2>Assignments</h2><p>Create and grade student assignments.</p></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;"><button class="btn btn-green" onclick="showModal('create-assignment-modal')">+ Create Assignment</button></div>
+      <div class="panel">
+        <div class="panel-title">📝 Active Assignments</div>
+        <table>
+          <thead><tr><th>Assignment</th><th>Course</th><th>Due Date</th><th>Submissions</th><th>Action</th></tr></thead>
+          <tbody id="lecturer-assignments-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- L: Grade Assignment -->
+    <div id="l-grade-assignment" class="page hidden">
+      <button class="back-btn" onclick="showPage('l-assignments')">← Back to Assignments</button>
+      <div id="grade-assignment-content"></div>
+    </div>
+
+    <!-- L: Grade Exam -->
+    <div id="l-grade-exam" class="page hidden">
+      <button class="back-btn" onclick="showPage('l-exams')">← Back to Exams</button>
+      <div id="grade-exam-content"></div>
+    </div>
+
+    <!-- L: Manage Exams -->
+    <div id="l-exams" class="page hidden">
+      <div class="page-header"><h2>📋 Manage Exams</h2><p>Create, configure and monitor examinations.</p></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;"><button class="btn btn-green" onclick="showModal('create-exam-modal')">+ Create Exam</button></div>
+      <div class="panel">
+        <div class="panel-title">⚙️ Active Exams</div>
+        <table>
+          <thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Questions</th><th>Anti-Cheat</th><th>Actions</th></tr></thead>
+          <tbody id="lecturer-exams-table">
+            <tr><td><strong>Midterm Exam</strong></td><td>Data Structures</td><td>Jun 12, 2026</td><td>40 Qs (shuffled)</td><td><span class="badge badge-green">Enabled</span></td><td><button class="btn btn-outline btn-sm" onclick="showPage('l-exam-monitor')">Monitor</button> <button class="btn btn-green btn-sm" onclick="openGradeExam('Midterm Exam','Data Structures')">Grade</button></td></tr>
+            <tr><td><strong>Quiz 3</strong></td><td>Algorithm Design</td><td>Jun 15, 2026</td><td>15 Qs (shuffled)</td><td><span class="badge badge-green">Enabled</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">🛡️ Anti-Cheating Configuration</div>
+        <table>
+          <thead><tr><th>Feature</th><th>Description</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Question Randomization</strong></td><td>Each student receives questions in a unique randomized order</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Answer Shuffling</strong></td><td>MCQ options are shuffled per student per attempt</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Tab Switch Detection</strong></td><td>Flags and logs every time a student switches browser tabs</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Copy-Paste Block</strong></td><td>Prevents copying questions and pasting answers</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Time Per Question</strong></td><td>Optional per-question countdown timer</td><td><span class="badge badge-amber">Optional</span></td></tr>
+            <tr><td><strong>Activity Log</strong></td><td>Full timestamp log of all student actions during exam</td><td><span class="badge badge-green">Active</span></td></tr>
+            <tr><td><strong>Similarity Checker</strong></td><td>Flags suspiciously similar answers across students</td><td><span class="badge badge-blue">Coming Soon</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- L: Exam Monitor -->
+    <div id="l-exam-monitor" class="page hidden">
+      <button class="back-btn" onclick="showPage('l-exams')">← Back to Exams</button>
+      <div class="page-header"><h2>🔴 Live Exam Monitor — Data Structures Midterm</h2><p>Real-time view of student activity. <span style="color:var(--brand);font-weight:600;">42 students currently taking exam.</span></p></div>
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:var(--brand)"><div class="stat-label">Active</div><div class="stat-val">42</div><div class="stat-sub">Taking exam now</div></div>
+        <div class="stat-card" style="--accent:var(--amber)"><div class="stat-label">Flagged</div><div class="stat-val">3</div><div class="stat-sub">Tab switches detected</div></div>
+        <div class="stat-card" style="--accent:var(--blue)"><div class="stat-label">Submitted</div><div class="stat-val">7</div><div class="stat-sub">Completed early</div></div>
+        <div class="stat-card" style="--accent:var(--red)"><div class="stat-label">Disconnected</div><div class="stat-val">1</div><div class="stat-sub">Connection lost</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">🚨 Flagged Activity</div>
+        <table>
+          <thead><tr><th>Student</th><th>Matric</th><th>Flag Type</th><th>Time</th><th>Count</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr style="background:#fff8f8;"><td><strong>Chidi A.</strong></td><td>BU/CS/2022/014</td><td><span class="badge badge-red">Tab Switch × 4</span></td><td>10:23 AM</td><td>4</td><td><button class="btn btn-red btn-sm">Warn</button></td></tr>
+            <tr style="background:#fff8f8;"><td><strong>Blessing O.</strong></td><td>BU/CS/2022/031</td><td><span class="badge badge-amber">Tab Switch × 2</span></td><td>10:31 AM</td><td>2</td><td><button class="btn btn-amber btn-sm">Warn</button></td></tr>
+            <tr style="background:#fff8f8;"><td><strong>Ahmed Y.</strong></td><td>BU/CS/2022/008</td><td><span class="badge badge-amber">Long Inactivity</span></td><td>10:18 AM</td><td>1</td><td><button class="btn btn-outline btn-sm">Review</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- L: Teaching Effectiveness -->
+    <div id="l-effectiveness" class="page hidden">
+      <div class="page-header"><h2>📈 Teaching Effectiveness</h2><p>Live analytics computed from real student scores below — edit any score and recompute.</p></div>
+      <div style="margin-bottom:16px;"><label class="field-label">Select Course</label><select class="select-field" id="effectiveness-course-select" style="max-width:260px;" onchange="loadEffectivenessCourse(this.value)"><option value="Data Structures">Data Structures (CSC301)</option><option value="Algorithm Design">Algorithm Design (CSC302)</option><option value="Web Technologies">Web Technologies (CSC201)</option><option value="Computer Networks">Computer Networks (CSC303)</option><option value="Operating Systems">Operating Systems (CSC305)</option></select></div>
+
+      <div class="panel">
+        <div class="panel-title">📋 Raw Student Scores (editable)</div>
+        <div style="overflow-x:auto;">
+          <table style="font-size:12px;">
+            <thead><tr id="eff-score-header"></tr></thead>
+            <tbody id="eff-score-body"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-green btn-sm" style="margin-top:14px;" onclick="renderEffectiveness()">Recompute Analytics</button>
+      </div>
+
+      <div class="stats-grid" id="effectiveness-stats-grid"></div>
+
+      <div class="panel">
+        <div class="panel-title">📊 Topic-by-Topic Class Performance</div>
+        <div id="effectiveness-bars"></div>
+      </div>
+
+      <div class="eff-grid" id="effectiveness-strong-weak-grid"></div>
+
+      <div class="panel" style="margin-top:20px;" id="effectiveness-recommendation-panel"></div>
+    </div>
+
+    <!-- L: Publish Results -->
+    <div id="l-results" class="page hidden">
+      <div class="page-header"><h2>🎓 Publish Results</h2><p>Review and release student results for each course.</p></div>
+      <div class="panel">
+        <div class="form-row"><div><label class="field-label">Course</label><select class="select-field" id="publish-course-select" onchange="renderPublishResults()"><option>Data Structures</option><option>Algorithm Design</option></select></div><div><label class="field-label">Weighting</label><select class="select-field" id="publish-weight-select" onchange="renderPublishResults()"><option value="30-70">Continuous Assessment 30% · Exam 70%</option><option value="50-50">Continuous Assessment 50% · Exam 50%</option><option value="100-0">Continuous Assessment Only</option></select></div></div>
+        <table style="margin-top:12px;">
+          <thead><tr><th>Student</th><th>Matric No</th><th>CA Avg</th><th>Exam</th><th>Final Score</th><th>Grade</th></tr></thead>
+          <tbody id="publish-results-table"></tbody>
+        </table>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <button class="btn btn-green" onclick="publishCourseResults()">Publish Results</button>
+          <button class="btn btn-outline" onclick="showToast('Draft saved.')">Save Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- L: Office Hours Management -->
+    <div id="l-officehours" class="page hidden">
+      <div class="page-header"><h2>📅 Manage Office Hours</h2><p>Set your availability and manage student bookings.</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="panel">
+          <div class="panel-title">⚙️ Set Availability</div>
+          <table>
+            <thead><tr><th>Day</th><th>Slots</th><th>Status</th></tr></thead>
+            <tbody id="availability-table">
+              <tr><td>Monday</td><td>9AM–11AM</td><td><span class="badge badge-green">Open</span></td></tr>
+              <tr><td>Wednesday</td><td>2PM–4PM</td><td><span class="badge badge-green">Open</span></td></tr>
+              <tr><td>Friday</td><td>10AM–12PM</td><td><span class="badge badge-amber">Closed today</span></td></tr>
+            </tbody>
+          </table>
+          <button class="btn btn-outline btn-sm" style="margin-top:14px;" onclick="showModal('add-slot-modal')">+ Add Time Slot</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">📋 Upcoming Bookings</div>
+          <table>
+            <tbody id="lecturer-bookings-table">
+              <tr><td style="color:var(--text-3);">Loading bookings...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ADMIN PAGES ═══════════ -->
+
+    <!-- A: Dashboard -->
+    <div id="a-dashboard" class="page hidden">
+      <div class="page-header"><h2>Admin Dashboard 🏛️</h2><p>Department of Computer Science — BazeLP System Overview</p></div>
+      <div class="stats-grid">
+        <div class="stat-card" style="--accent:var(--brand)"><div class="stat-label">Total Students</div><div class="stat-val">312</div><div class="stat-sub">Active this semester</div></div>
+        <div class="stat-card" style="--accent:var(--blue)"><div class="stat-label">Lecturers</div><div class="stat-val">18</div><div class="stat-sub">8 active today</div></div>
+        <div class="stat-card" style="--accent:var(--amber)"><div class="stat-label">Active Courses</div><div class="stat-val">24</div><div class="stat-sub">This semester</div></div>
+        <div class="stat-card" style="--accent:var(--brand)"><div class="stat-label">Platform Uptime</div><div class="stat-val">99.8%</div><div class="stat-sub">Last 30 days</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="panel">
+          <div class="panel-title">📊 Department-wide Performance</div>
+          <div class="topic-bar-row"><span class="topic-name">100 Level</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:72%;background:var(--brand);"></div></div><span class="topic-pct" style="color:var(--brand);">72%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">200 Level</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:68%;background:var(--brand);"></div></div><span class="topic-pct" style="color:var(--brand);">68%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">300 Level</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:61%;background:var(--amber);"></div></div><span class="topic-pct" style="color:var(--amber);">61%</span></div>
+          <div class="topic-bar-row"><span class="topic-name">400 Level</span><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:74%;background:var(--brand);"></div></div><span class="topic-pct" style="color:var(--brand);">74%</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">🔔 Recent System Alerts</div>
+          <div class="notif-list">
+            <div class="notif-item"><div class="notif-dot-indicator"></div><div><div class="notif-text">3 exam flags logged during Data Structures Midterm</div><div class="notif-time">Today, 10:45 AM</div></div></div>
+            <div class="notif-item"><div class="notif-dot-indicator"></div><div><div class="notif-text">New course registration: Dr. Usman added Web Security</div><div class="notif-time">Yesterday, 3:00 PM</div></div></div>
+            <div class="notif-item"><div class="notif-dot-indicator read"></div><div><div class="notif-text">Bulk enrollment completed: 45 students to 200L courses</div><div class="notif-time">Jun 5, 2026</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A: Users -->
+    <div id="a-users" class="page hidden">
+      <div class="page-header"><h2>User Management</h2></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+        <input class="input-field" placeholder="Search users..." style="max-width:260px;"/>
+        <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="showToast('User created!')">+ Add User</button><button class="btn btn-outline" onclick="showToast('Importing CSV...')">Import CSV</button></div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Name</th><th>Matric/Staff No</th><th>Role</th><th>Level</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mustafa Ibrahim</strong></td><td>BU/CS/2022/001</td><td><span class="badge badge-blue">Student</span></td><td>300L</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+            <tr><td><strong>Dr. Gilbert Danjuma</strong></td><td>BU/CS/STAFF/014</td><td><span class="badge badge-green">Lecturer</span></td><td>—</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+            <tr><td><strong>Chukwuemeka Obi</strong></td><td>BU/CS/2022/014</td><td><span class="badge badge-blue">Student</span></td><td>300L</td><td><span class="badge badge-amber">Suspended</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+            <tr><td><strong>Ngozi Eze</strong></td><td>BU/CS/2023/022</td><td><span class="badge badge-blue">Student</span></td><td>200L</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- A: All Courses -->
+    <div id="a-courses" class="page hidden">
+      <div class="page-header"><h2>All Courses</h2></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px;"><button class="btn btn-green" onclick="showModal('create-course-modal')">+ Create Course</button></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Course Code</th><th>Title</th><th>Lecturer</th><th>Level</th><th>Students</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>CSC301</strong></td><td>Data Structures</td><td>Dr. Gilbert</td><td>300L</td><td>52</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Manage</button></td></tr>
+            <tr><td><strong>CSC302</strong></td><td>Algorithm Design</td><td>Dr. Gilbert</td><td>300L</td><td>50</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Manage</button></td></tr>
+            <tr><td><strong>CSC201</strong></td><td>Web Technologies</td><td>Dr. Usman</td><td>200L</td><td>63</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-outline btn-sm">Manage</button></td></tr>
+            <tr><td><strong>CSC401</strong></td><td>Software Engineering</td><td>Dr. Abubakar</td><td>400L</td><td>44</td><td><span class="badge badge-amber">Pending Approval</span></td><td><button class="btn btn-green btn-sm" onclick="showToast('Course approved!')">Approve</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- A: Enroll -->
+    <div id="a-enroll" class="page hidden">
+      <div class="page-header"><h2>➕ Enroll Students</h2></div>
+      <div class="panel">
+        <div class="form-row"><div><label class="field-label">Course</label><select class="select-field"><option>CSC301 — Data Structures</option><option>CSC302 — Algorithm Design</option><option>CSC201 — Web Technologies</option></select></div><div><label class="field-label">Level</label><select class="select-field"><option>100 Level</option><option>200 Level</option><option selected>300 Level</option><option>400 Level</option></select></div></div>
+        <div style="margin-bottom:16px;"><label class="field-label">Upload CSV (Matric Numbers)</label><div class="upload-area" onclick="showToast('Select your CSV file')"><div class="upload-icon">📋</div><p>Upload student matric numbers (.csv)</p><span>One matric number per line</span></div></div>
+        <p style="font-size:13px;color:var(--text-2);margin-bottom:16px;">— or enroll individually —</p>
+        <div class="form-row"><div><label class="field-label">Student Matric Number</label><input class="input-field" placeholder="BU/CS/2022/001"/></div><div><label class="field-label">&nbsp;</label><button class="btn btn-green" style="margin-top:0;width:100%;" onclick="showToast('Student enrolled successfully!')">Enroll Student</button></div></div>
+      </div>
+    </div>
+
+    <!-- A: Exam Logs -->
+    <div id="a-logs" class="page hidden">
+      <div class="page-header"><h2>🔍 Exam Activity Logs</h2><p>Monitor and review all exam integrity events.</p></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Student</th><th>Exam</th><th>Flag Type</th><th>Count</th><th>Time</th><th>Severity</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Chidi A.</strong></td><td>Data Structures Midterm</td><td>Tab Switch</td><td>4</td><td>Jun 8, 10:23 AM</td><td><span class="badge badge-red">High</span></td></tr>
+            <tr><td><strong>Blessing O.</strong></td><td>Data Structures Midterm</td><td>Tab Switch</td><td>2</td><td>Jun 8, 10:31 AM</td><td><span class="badge badge-amber">Medium</span></td></tr>
+            <tr><td><strong>Ahmed Y.</strong></td><td>Data Structures Midterm</td><td>Long Inactivity</td><td>1</td><td>Jun 8, 10:18 AM</td><td><span class="badge badge-amber">Medium</span></td></tr>
+            <tr><td><strong>Ngozi E.</strong></td><td>Web Tech Quiz 2</td><td>Tab Switch</td><td>1</td><td>May 20, 2:14 PM</td><td><span class="badge badge-gray">Low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- A: Academic Calendar -->
+    <div id="a-calendar" class="page hidden">
+      <div class="page-header"><h2>📆 Academic Calendar</h2><p>2025/2026 Academic Session — Second Semester</p></div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Event</th><th>Start Date</th><th>End Date</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Second Semester Begins</strong></td><td>Feb 3, 2026</td><td>—</td><td><span class="badge badge-green">Academic</span></td></tr>
+            <tr><td><strong>Continuous Assessment Period</strong></td><td>Mar 1, 2026</td><td>May 31, 2026</td><td><span class="badge badge-blue">Assessment</span></td></tr>
+            <tr><td><strong>Exam Registration Deadline</strong></td><td>—</td><td>Jun 5, 2026</td><td><span class="badge badge-amber">Deadline</span></td></tr>
+            <tr><td><strong>Second Semester Exams</strong></td><td>Jun 10, 2026</td><td>Jun 28, 2026</td><td><span class="badge badge-red">Exams</span></td></tr>
+            <tr><td><strong>Results Publication</strong></td><td>Jul 10, 2026</td><td>—</td><td><span class="badge badge-green">Results</span></td></tr>
+            <tr><td><strong>Semester Break</strong></td><td>Jul 15, 2026</td><td>Aug 31, 2026</td><td><span class="badge badge-gray">Break</span></td></tr>
+          </tbody>
+        </table>
+        <button class="btn btn-green" style="margin-top:16px;" onclick="showModal('add-calendar-modal')">+ Add Event</button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS (shared) -->
+    <div id="notifications" class="page hidden">
+      <div class="page-header"><h2>🔔 Notifications</h2></div>
+      <div class="panel">
+        <div class="notif-list">
+          <div class="notif-item"><div class="notif-dot-indicator"></div><div><div class="notif-text"><strong>Assignment Due Soon:</strong> Binary Tree Implementation is due today at 11:59 PM.</div><div class="notif-time">Today, 8:00 AM</div></div></div>
+          <div class="notif-item"><div class="notif-dot-indicator"></div><div><div class="notif-text"><strong>New Material:</strong> Dr. Gilbert uploaded "Week 7 – Graph Traversal" for Data Structures.</div><div class="notif-time">Yesterday, 4:30 PM</div></div></div>
+          <div class="notif-item"><div class="notif-dot-indicator"></div><div><div class="notif-text"><strong>Office Hours Confirmed:</strong> Your booking with Dr. Gilbert on Monday 10:00 AM is confirmed.</div><div class="notif-time">Jun 6, 2026</div></div></div>
+          <div class="notif-item"><div class="notif-dot-indicator read"></div><div><div class="notif-text"><strong>Result Published:</strong> Your score for Database Systems Quiz 1 is now available.</div><div class="notif-time">Jun 5, 2026</div></div></div>
+          <div class="notif-item"><div class="notif-dot-indicator read"></div><div><div class="notif-text"><strong>AI Learning Path Updated:</strong> Based on your latest quiz performance, your study path has been refreshed.</div><div class="notif-time">Jun 4, 2026</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ MODALS ═══ -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal(event)">
+
+  <div id="submit-assignment-modal" class="modal hidden">
+    <div class="modal-title">Submit Assignment<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:16px;" id="submit-assignment-name">Binary Tree Implementation</p>
+    <label class="field-label">Upload File</label>
+    <div class="upload-area" style="margin-bottom:16px;" id="assignment-upload-area" onclick="document.getElementById('assignment-file-input').click()">
+      <div class="upload-icon">📎</div>
+      <p id="assignment-upload-text">Click to attach your file</p>
+      <span>PDF, DOCX, ZIP — Max 10MB</span>
+    </div>
+    <input type="file" id="assignment-file-input" style="display:none;" onchange="handleAssignmentFile(this)"/>
+    <label class="field-label">Notes to Lecturer (optional)</label>
+    <textarea class="textarea-field" id="assignment-submit-notes" placeholder="Any notes about your submission..."></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-green" onclick="submitAssignmentFile()">Submit</button>
+      <button class="btn btn-outline" onclick="closeAllModals()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="create-assignment-modal" class="modal hidden">
+    <div class="modal-title">Create Assignment<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row"><div><label class="field-label">Course</label><select class="select-field" id="new-assign-course"><option>Data Structures</option><option>Algorithm Design</option><option>Operating Systems</option><option>Theory of Computation</option></select></div><div><label class="field-label">Due Date</label><input type="date" class="input-field" id="new-assign-due"/></div></div>
+    <div class="form-row full"><label class="field-label">Title</label><input class="input-field" id="new-assign-title" placeholder="Assignment title..."/></div>
+    <div class="form-row full"><label class="field-label">Instructions</label><textarea class="textarea-field" id="new-assign-instructions" placeholder="Describe what students need to do..."></textarea></div>
+    <div class="form-row"><div><label class="field-label">Max Score</label><input type="number" class="input-field" id="new-assign-score" value="100"/></div><div><label class="field-label">Submission Type</label><select class="select-field"><option>File Upload</option><option>Text Entry</option></select></div></div>
+    <div style="display:flex;gap:10px;margin-top:4px;"><button class="btn btn-green" onclick="createAssignment()">Create</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+  <div id="create-exam-modal" class="modal hidden">
+    <div class="modal-title">Create Exam<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row"><div><label class="field-label">Course</label><select class="select-field" id="new-exam-course"><option>Data Structures</option><option>Algorithm Design</option><option>Operating Systems</option><option>Theory of Computation</option></select></div><div><label class="field-label">Exam Type</label><select class="select-field" id="new-exam-type"><option>Multiple Choice</option><option>Theory</option><option>Mixed</option></select></div></div>
+    <div class="form-row"><div><label class="field-label">Title</label><input class="input-field" id="new-exam-title" placeholder="e.g. Midterm Exam"/></div><div><label class="field-label">Number of Questions</label><input type="number" class="input-field" id="new-exam-qcount" value="20"/></div></div>
+    <div class="form-row"><div><label class="field-label">Date</label><input type="date" class="input-field" id="new-exam-date"/></div><div><label class="field-label">Duration (minutes)</label><input type="number" class="input-field" id="new-exam-duration" value="60"/></div></div>
+    <div style="margin-bottom:16px;"><label class="field-label">Anti-Cheating Options</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;font-size:13px;">
+        <label><input type="checkbox" checked/> Randomize question order</label>
+        <label><input type="checkbox" checked/> Shuffle MCQ answers</label>
+        <label><input type="checkbox" checked/> Detect tab switching</label>
+        <label><input type="checkbox" checked/> Disable copy-paste</label>
+        <label><input type="checkbox"/> Time limit per question</label>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="createExam()">Create Exam</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+  <div id="add-slot-modal" class="modal hidden">
+    <div class="modal-title">Add Office Hours Slot<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row"><div><label class="field-label">Day</label><select class="select-field" id="new-slot-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select></div><div><label class="field-label">Location</label><input class="input-field" id="new-slot-location" placeholder="e.g. Room 201, CS Block"/></div></div>
+    <div class="form-row"><div><label class="field-label">Start Time</label><input type="time" class="input-field" id="new-slot-start" value="09:00"/></div><div><label class="field-label">End Time</label><input type="time" class="input-field" id="new-slot-end" value="11:00"/></div></div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="addOfficeHourSlot()">Save</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+  <div id="create-course-modal" class="modal hidden">
+    <div class="modal-title">Create Course<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row"><div><label class="field-label">Course Code</label><input class="input-field" placeholder="e.g. CSC305"/></div><div><label class="field-label">Level</label><select class="select-field"><option>100 Level</option><option>200 Level</option><option>300 Level</option><option>400 Level</option></select></div></div>
+    <div class="form-row full"><label class="field-label">Course Title</label><input class="input-field" placeholder="e.g. Operating Systems"/></div>
+    <div class="form-row"><div><label class="field-label">Assign Lecturer</label><select class="select-field"><option>Dr. Gilbert Danjuma</option><option>Dr. Usman Bello</option><option>Dr. Abubakar Suleiman</option></select></div><div><label class="field-label">Credit Units</label><input type="number" class="input-field" value="3"/></div></div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="showToast('Course created!');closeAllModals()">Create</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+  <div id="lecturer-add-course-modal" class="modal hidden">
+    <div class="modal-title">Add New Course<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row"><div><label class="field-label">Course Code</label><input class="input-field" id="new-course-code" placeholder="e.g. CSC307"/></div><div><label class="field-label">Level</label><select class="select-field" id="new-course-level"><option>100L</option><option>200L</option><option selected>300L</option><option>400L</option></select></div></div>
+    <div class="form-row full"><label class="field-label">Course Title</label><input class="input-field" id="new-course-title" placeholder="e.g. Compiler Construction"/></div>
+    <div class="form-row"><div><label class="field-label">Credit Units</label><input type="number" class="input-field" id="new-course-units" value="3"/></div></div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="addLecturerCourse()">Create Course</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+  <div id="browse-courses-modal" class="modal hidden">
+    <div class="modal-title">Browse &amp; Enroll in Courses<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div id="browse-courses-list" style="max-height:60vh;overflow-y:auto;"></div>
+    <div style="display:flex;gap:10px;margin-top:10px;"><button class="btn btn-outline" onclick="closeAllModals()">Done</button></div>
+  </div>
+
+  <div id="exam-questions-modal" class="modal hidden" style="max-width:640px;">
+    <div class="modal-title">Manage Exam Questions<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+
+    <div id="exam-questions-existing" style="max-height:30vh;overflow-y:auto;margin-bottom:16px;"></div>
+
+    <div style="border-top:1px solid var(--border);padding-top:14px;">
+      <div class="panel-title" style="margin-bottom:10px;">Add a Question</div>
+      <div class="form-row full"><label class="field-label">Question</label>
+        <input class="input-field" id="new-question-text" placeholder="e.g. What is the time complexity of binary search?"/></div>
+      <div class="form-row">
+        <div><label class="field-label">Type</label>
+          <select class="select-field" id="new-question-type" onchange="toggleQuestionOptions()">
+            <option value="MCQ">Multiple Choice</option>
+            <option value="text">Written Answer</option>
+          </select></div>
+        <div><label class="field-label">Marks</label>
+          <input type="number" class="input-field" id="new-question-marks" value="1" min="1"/></div>
+      </div>
+
+      <div id="new-question-options-row">
+        <label class="field-label">Options (tick the correct one)</label>
+        <div id="new-question-options"></div>
+        <button class="btn btn-outline btn-sm" style="margin-top:8px;" onclick="addOptionRow()">+ Add Option</button>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn btn-green" onclick="saveExamQuestion()">Add Question</button>
+        <button class="btn btn-outline" onclick="closeAllModals()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="exam-grading-modal" class="modal hidden" style="max-width:760px;">
+    <div class="modal-title">Grade Exam &amp; Review Integrity<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+
+    <div class="panel-title" style="margin-bottom:8px;">Student Attempts</div>
+    <div id="grading-attempts" style="max-height:34vh;overflow-y:auto;margin-bottom:18px;"></div>
+
+    <div class="panel-title" style="margin-bottom:8px;">Tab-Switch &amp; Integrity Events</div>
+    <div id="grading-integrity" style="max-height:26vh;overflow-y:auto;margin-bottom:18px;"></div>
+
+    <div style="display:flex;gap:10px;border-top:1px solid var(--border);padding-top:14px;">
+      <button class="btn btn-outline" onclick="closeAllModals()">Close</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-3);margin-top:8px;">
+      Saving a score records it. Students see results after you publish them from the Results page.
+    </p>
+  </div>
+
+  <div id="add-calendar-modal" class="modal hidden">
+    <div class="modal-title">Add Calendar Event<button class="modal-close" onclick="closeAllModals()">✕</button></div>
+    <div class="form-row full"><label class="field-label">Event Title</label><input class="input-field" placeholder="e.g. Public Holiday — Eid"/></div>
+    <div class="form-row"><div><label class="field-label">Start Date</label><input type="date" class="input-field"/></div><div><label class="field-label">End Date</label><input type="date" class="input-field"/></div></div>
+    <div class="form-row"><div><label class="field-label">Event Type</label><select class="select-field"><option>Academic</option><option>Assessment</option><option>Deadline</option><option>Exams</option><option>Holiday</option><option>Break</option></select></div></div>
+    <div style="display:flex;gap:10px;"><button class="btn btn-green" onclick="showToast('Event added!');closeAllModals()">Add Event</button><button class="btn btn-outline" onclick="closeAllModals()">Cancel</button></div>
+  </div>
+
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--brand-dark);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;max-width:320px;"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
